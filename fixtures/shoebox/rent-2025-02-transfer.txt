@@ -1,0 +1,6 @@
+[Screenshot text, banking app]
+Payment sent
+To: MARY BYRNE
+Amount: €1,150.00
+Date: 01/02/2025
+Reference: RENT APT4 02-25

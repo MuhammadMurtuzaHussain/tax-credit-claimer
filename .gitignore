@@ -1,0 +1,5 @@
+node_modules
+out
+# Your real shoebox. Never commit it.
+shoebox
+!fixtures/shoebox

@@ -1,0 +1,5 @@
+Example Dental Practice
+Date: 03/06/2025
+Patient: Aoife Sample
+Check-up, scale and polish ..... €80.00
+Total due: €80.00   PAID

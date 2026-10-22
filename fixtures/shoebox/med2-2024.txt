@@ -1,0 +1,6 @@
+FORM MED 2 (SAMPLE) - Health Expenses, Specified Dental Treatment
+Tax year: 2024
+Dentist: Dr. Example Dentist, Example Dental Practice
+Patient: Aoife Sample
+Treatment: Crown
+Amount paid for treatment: €950.00

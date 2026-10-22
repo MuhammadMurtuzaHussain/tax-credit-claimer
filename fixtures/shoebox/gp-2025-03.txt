@@ -1,0 +1,5 @@
+Salthill Sample Medical Centre
+Patient: Aoife Sample
+Date: 12 March 2025
+GP consultation ........ €65.00
+TOTAL PAID: €65.00

@@ -1,0 +1,7 @@
+Sample Physiotherapy Clinic
+Date: 08/11/2022
+Patient: Aoife Sample
+Referred by: Dr. Sample (GP)
+Physiotherapy session ..... €60.00
+Total: €60.00
+Insurer refund claimed: €30.00

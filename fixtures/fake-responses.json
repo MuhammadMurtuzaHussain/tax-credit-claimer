@@ -1,0 +1,186 @@
+{
+  "lease-2024.txt": {
+    "kind": "lease",
+    "landlordName": "Mary Byrne",
+    "landlordAddress": "3 Sample Terrace, Oranmore, Co. Galway",
+    "propertyAddress": "Apartment 4, 12 Example Road, Galway",
+    "eircode": "H91 X0X0",
+    "rtbNumber": "RT-SAMPLE-000123",
+    "monthlyRent": 1100,
+    "startDate": "2024-01-01",
+    "endDate": null,
+    "tenants": ["Aoife Sample"],
+    "evidence": {
+      "landlordName": "Landlord: Mary Byrne",
+      "startDate": "commencing 1 January 2024",
+      "rtbNumber": "RT-SAMPLE-000123",
+      "monthlyRent": "EUR 1,100.00 per month"
+    }
+  },
+  "rent-2024-landlord-statement.txt": {
+    "kind": "rent_payment",
+    "date": "2025-01-15",
+    "amount": 13200,
+    "payee": "Mary Byrne",
+    "coversFrom": "2024-01-01",
+    "coversTo": "2024-12-31",
+    "reference": null,
+    "evidence": {
+      "amount": "paid rent of €13,200.00",
+      "date": "Signed, Mary Byrne, 15/01/2025",
+      "payee": "Mary Byrne"
+    }
+  },
+  "rent-2025-01-transfer.txt": {
+    "kind": "rent_payment",
+    "date": "2025-01-01",
+    "amount": 1150,
+    "payee": "MARY BYRNE",
+    "coversFrom": null,
+    "coversTo": null,
+    "reference": "RENT APT4 01-25",
+    "evidence": { "amount": "Amount: €1,150.00", "date": "Date: 01/01/2025", "payee": "To: MARY BYRNE" }
+  },
+  "rent-2025-02-transfer.txt": {
+    "kind": "rent_payment",
+    "date": "2025-02-01",
+    "amount": 1150,
+    "payee": "MARY BYRNE",
+    "coversFrom": null,
+    "coversTo": null,
+    "reference": "RENT APT4 02-25",
+    "evidence": { "amount": "Amount: €1,150.00", "date": "Date: 01/02/2025", "payee": "To: MARY BYRNE" }
+  },
+  "rent-2025-02-transfer-copy.txt": {
+    "kind": "rent_payment",
+    "date": "2025-02-01",
+    "amount": 1150,
+    "payee": "MARY BYRNE",
+    "coversFrom": null,
+    "coversTo": null,
+    "reference": "RENT APT4 02-25",
+    "evidence": { "amount": "Amount: €1,150.00", "date": "Date: 01/02/2025", "payee": "To: MARY BYRNE" }
+  },
+  "rent-2025-03-transfer.txt": {
+    "kind": "rent_payment",
+    "date": "2025-03-01",
+    "amount": 1150,
+    "payee": "MARY BYRNE",
+    "coversFrom": null,
+    "coversTo": null,
+    "reference": "RENT APT4 03-25",
+    "evidence": { "amount": "Amount: €1,150.00", "date": "Date: 01/03/2025", "payee": "To: MARY BYRNE" }
+  },
+  "rent-2026-10-transfer.txt": {
+    "kind": "rent_payment",
+    "date": "2026-10-01",
+    "amount": 1200,
+    "payee": "MARY BYRNE",
+    "coversFrom": null,
+    "coversTo": null,
+    "reference": "RENT APT4 OCT",
+    "evidence": { "amount": "Amount: €1,200.00", "date": "Date: 01/10/2026", "payee": "To: MARY BYRNE" }
+  },
+  "gp-2025-03.txt": {
+    "kind": "medical_receipt",
+    "date": "2025-03-12",
+    "provider": "Salthill Sample Medical Centre",
+    "patient": "Aoife Sample",
+    "description": "GP consultation",
+    "category": "gp_or_consultant",
+    "total": 65,
+    "lineItems": [{ "description": "GP consultation", "amount": 65 }],
+    "reimbursed": 0,
+    "prescribedOrReferred": false,
+    "evidence": {
+      "total": "TOTAL PAID: €65.00",
+      "date": "Date: 12 March 2025",
+      "provider": "Salthill Sample Medical Centre"
+    }
+  },
+  "pharmacy-2025-04.txt": {
+    "kind": "medical_receipt",
+    "date": "2025-04-14",
+    "provider": "Sample Pharmacy",
+    "patient": null,
+    "description": "Prescription items x2",
+    "category": "prescribed_medicine",
+    "total": 52.5,
+    "lineItems": [],
+    "reimbursed": 0,
+    "prescribedOrReferred": true,
+    "evidence": { "total": "Total: €52.50", "date": "14/04/2025", "provider": "Sample Pharmacy" }
+  },
+  "dental-cleaning-2025.txt": {
+    "kind": "medical_receipt",
+    "date": "2025-06-03",
+    "provider": "Example Dental Practice",
+    "patient": "Aoife Sample",
+    "description": "Check-up, scale and polish",
+    "category": "routine_dental",
+    "total": 80,
+    "lineItems": [{ "description": "Check-up, scale and polish", "amount": 80 }],
+    "reimbursed": 0,
+    "prescribedOrReferred": false,
+    "evidence": { "total": "Total due: €80.00", "date": "Date: 03/06/2025", "provider": "Example Dental Practice" }
+  },
+  "dental-crown-2024-receipt.txt": {
+    "kind": "medical_receipt",
+    "date": "2024-09-20",
+    "provider": "Example Dental Practice",
+    "patient": "Aoife Sample",
+    "description": "Porcelain crown, upper left 6",
+    "category": "non_routine_dental",
+    "total": 950,
+    "lineItems": [{ "description": "Porcelain crown, upper left 6", "amount": 950 }],
+    "reimbursed": 0,
+    "prescribedOrReferred": false,
+    "evidence": { "total": "Total: €950.00", "date": "Date: 20/09/2024", "provider": "Example Dental Practice" }
+  },
+  "med2-2024.txt": {
+    "kind": "med2",
+    "taxYear": 2024,
+    "dentist": "Dr. Example Dentist",
+    "patient": "Aoife Sample",
+    "treatment": "Crown",
+    "amount": 950,
+    "evidence": { "amount": "Amount paid for treatment: €950.00", "dentist": "Dr. Example Dentist", "taxYear": "Tax year: 2024" }
+  },
+  "physio-2022-11.txt": {
+    "kind": "medical_receipt",
+    "date": "2022-11-08",
+    "provider": "Sample Physiotherapy Clinic",
+    "patient": "Aoife Sample",
+    "description": "Physiotherapy session",
+    "category": "physio_or_similar_referred",
+    "total": 60,
+    "lineItems": [{ "description": "Physiotherapy session", "amount": 60 }],
+    "reimbursed": 30,
+    "prescribedOrReferred": true,
+    "evidence": {
+      "total": "Total: €60.00",
+      "date": "Date: 08/11/2022",
+      "provider": "Sample Physiotherapy Clinic",
+      "reimbursed": "Insurer refund claimed: €30.00",
+      "prescribedOrReferred": "Referred by: Dr. Sample (GP)"
+    }
+  },
+  "consultant-2021.txt": {
+    "kind": "medical_receipt",
+    "date": "2021-05-05",
+    "provider": "Sample Consultant Rooms",
+    "patient": null,
+    "description": "Consultation fee",
+    "category": "gp_or_consultant",
+    "total": 120,
+    "lineItems": [{ "description": "Consultation fee", "amount": 120 }],
+    "reimbursed": 0,
+    "prescribedOrReferred": false,
+    "evidence": { "total": "Total: €120.00", "date": "Date: 05/05/2021", "provider": "Sample Consultant Rooms" }
+  },
+  "takeaway-receipt.txt": {
+    "kind": "other",
+    "why": "a food receipt from a chipper",
+    "evidence": { "why": "2x fish supper" }
+  }
+}
