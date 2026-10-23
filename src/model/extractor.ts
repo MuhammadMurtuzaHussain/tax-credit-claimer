@@ -5,10 +5,12 @@ export type InputDoc = {
   /** Path relative to the shoebox folder. */
   name: string;
   mime: string;
-  /** Text content for .txt / .md / .eml. Null for images. */
+  /** Text content for text files and PDFs with a text layer. Null for images and scans. */
   text: string | null;
-  /** Raw bytes for images, so a vision model can read them. */
-  bytes: Buffer | null;
+  /** The same text split by page (one entry for a text file), so long statements can be read a page at a time. */
+  pages: string[] | null;
+  /** Images for a vision model: a photo or screenshot, or the drawn pages of a scanned PDF. */
+  images: Buffer[];
 };
 
 export interface Extractor {

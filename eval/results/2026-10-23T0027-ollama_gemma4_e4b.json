@@ -1,11 +1,11 @@
 {
   "extractor": "ollama gemma4:e4b",
-  "kindOk": 17,
-  "fieldsOk": 36,
-  "fieldsAll": 36,
-  "seconds": 52.666,
-  "rent": 2160,
-  "health": 257.5,
+  "kindOk": 19,
+  "fieldsOk": 40,
+  "fieldsAll": 40,
+  "seconds": 77.868,
+  "rent": 2240,
+  "health": 271.5,
   "findings": [
     {
       "doc": "IMG_2025-04-01-rent.png",
@@ -15,6 +15,12 @@
     },
     {
       "doc": "IMG_receipt-photo.png",
+      "rule": "G2",
+      "level": "note",
+      "message": "read from an image: check the amount and date by eye"
+    },
+    {
+      "doc": "scan0003.pdf",
       "rule": "G2",
       "level": "note",
       "message": "read from an image: check the amount and date by eye"
@@ -30,6 +36,12 @@
       "rule": "G3",
       "level": "dropped",
       "message": "same payment as another document (2025-02-01, €1150.00)"
+    },
+    {
+      "doc": "IMG_2025-04-01-rent.png",
+      "rule": "G3",
+      "level": "dropped",
+      "message": "same payment as another document (2025-04-01, €1150.00)"
     },
     {
       "doc": "consultant-2021.txt",
@@ -121,6 +133,43 @@
           "reimbursed": "0",
           "prescribedOrReferred": "false",
           "evidence_total": "€200.00"
+        }
+      }
+    },
+    {
+      "file": "Lease_signed_2024.pdf",
+      "want": {
+        "kind": "lease",
+        "date": "2024-01-01"
+      },
+      "got": {
+        "kind": "lease",
+        "date": "2024-01-01"
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "lease",
+        "landlordName": "Mary Byrne",
+        "landlordAddress": "3 Sample Terrace, Oranmore, Co. Galway",
+        "propertyAddress": "Apartment 4, 12 Example Road, Galway",
+        "eircode": "H91 X0X0",
+        "rtbNumber": "RT-SAMPLE-000123",
+        "monthlyRent": 1100,
+        "startDate": "2024-01-01",
+        "endDate": null,
+        "tenants": [
+          "Aoife Sample"
+        ],
+        "evidence": {
+          "landlordName": "Mary Byrne",
+          "landlordAddress": "3 Sample Terrace, Oranmore, Co. Galway",
+          "propertyAddress": "Apartment 4, 12 Example Road, Galway",
+          "eircode": "H91 X0X0",
+          "rtbNumber": "RT-SAMPLE-000123",
+          "monthlyRent": "EUR 1,100.00",
+          "startDate": "1 January 2024",
+          "endDate": "null",
+          "tenants": "Aoife Sample"
         }
       }
     },
@@ -288,43 +337,6 @@
           "date": "12 March 2025",
           "total": "€65.00",
           "description": "GP consultation ........ €65.00"
-        }
-      }
-    },
-    {
-      "file": "lease-2024.txt",
-      "want": {
-        "kind": "lease",
-        "date": "2024-01-01"
-      },
-      "got": {
-        "kind": "lease",
-        "date": "2024-01-01"
-      },
-      "wrong": [],
-      "raw": {
-        "kind": "lease",
-        "landlordName": "Mary Byrne",
-        "landlordAddress": "3 Sample Terrace, Oranmore, Co. Galway",
-        "propertyAddress": "Apartment 4, 12 Example Road, Galway",
-        "eircode": "H91 X0X0",
-        "rtbNumber": "RT-SAMPLE-000123",
-        "monthlyRent": 1100,
-        "startDate": "2024-01-01",
-        "endDate": null,
-        "tenants": [
-          "Aoife Sample"
-        ],
-        "evidence": {
-          "landlordName": "Mary Byrne",
-          "landlordAddress": "3 Sample Terrace, Oranmore, Co. Galway",
-          "propertyAddress": "Apartment 4, 12 Example Road, Galway",
-          "eircode": "H91 X0X0",
-          "rtbNumber": "RT-SAMPLE-000123",
-          "monthlyRent": "EUR 1,100.00",
-          "startDate": "1 January 2024",
-          "endDate": "null",
-          "tenants": "Aoife Sample"
         }
       }
     },
@@ -625,6 +637,96 @@
           "coversFrom": "null",
           "coversTo": "null",
           "reference": "RENT APT4 OCT"
+        }
+      }
+    },
+    {
+      "file": "scan0003.pdf",
+      "want": {
+        "kind": "medical_receipt",
+        "date": "2023-02-09",
+        "money": 70,
+        "category": "gp_or_consultant"
+      },
+      "got": {
+        "kind": "medical_receipt",
+        "date": "2023-02-09",
+        "money": 70,
+        "category": "gp_or_consultant"
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "medical_receipt",
+        "date": "2023-02-09",
+        "provider": "SALTHILL SAMPLE MEDICAL CENTRE",
+        "patient": "Aoife Sample",
+        "description": "GP consultation",
+        "category": "gp_or_consultant",
+        "total": 70,
+        "lineItems": [
+          {
+            "description": "GP consultation",
+            "amount": 70
+          }
+        ],
+        "reimbursed": 0,
+        "prescribedOrReferred": false,
+        "evidence": {
+          "date": "09/02/2023",
+          "provider": "SALTHILL SAMPLE MEDICAL CENTRE",
+          "patient": "Aoife Sample",
+          "description": "GP consultation",
+          "category": "gp_or_consultant",
+          "total": "€70.00",
+          "reimbursed": "0",
+          "prescribedOrReferred": "false",
+          "evidence_total": "TOTAL PAID €70.00"
+        }
+      }
+    },
+    {
+      "file": "statement_Q2_2025.pdf",
+      "want": {
+        "kind": "bank_statement",
+        "payments": 3
+      },
+      "got": {
+        "kind": "bank_statement",
+        "payments": 3
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "bank_statement",
+        "bank": "Sample Bank",
+        "accountHolder": "Aoife Sample",
+        "periodFrom": "2025-04-01",
+        "periodTo": "2025-06-30",
+        "payments": [
+          {
+            "date": "2025-04-01",
+            "amount": 1150,
+            "payee": "MARY BYRNE",
+            "line": "01/04/2025 MARY BYRNE RENT APT4 04-25 1,150.00 2,310.55"
+          },
+          {
+            "date": "2025-05-01",
+            "amount": 1150,
+            "payee": "MARY BYRNE",
+            "line": "01/05/2025 MARY BYRNE RENT APT4 05-25 1,150.00 3,515.35"
+          },
+          {
+            "date": "2025-06-01",
+            "amount": 1150,
+            "payee": "MARY BYRNE",
+            "line": "01/06/2025 MARY BYRNE RENT APT4 06-25 1,150.00 4,753.36"
+          }
+        ],
+        "evidence": {
+          "bank": "Sample Bank",
+          "accountHolder": "Aoife Sample",
+          "periodFrom": "01/04/2025",
+          "periodTo": "30/06/2025",
+          "payments": "01/04/2025 MARY BYRNE RENT APT4 04-25 1,150.00 2,310.55\n01/05/2025 MARY BYRNE RENT APT4 05-25 1,150.00 3,515.35"
         }
       }
     },

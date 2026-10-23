@@ -1,7 +1,7 @@
 {
   "_totals": {
-    "rent": 2160,
-    "health": 257.5
+    "rent": 2240,
+    "health": 271.5
   },
   "consultant-2021.txt": {
     "kind": "medical_receipt",
@@ -26,10 +26,6 @@
     "date": "2025-03-12",
     "money": 65,
     "category": "gp_or_consultant"
-  },
-  "lease-2024.txt": {
-    "kind": "lease",
-    "date": "2024-01-01"
   },
   "med2-2024.txt": {
     "kind": "med2",
@@ -88,6 +84,20 @@
     "kind": "medical_receipt",
     "date": "2024-11-18",
     "money": 200,
+    "category": "gp_or_consultant"
+  },
+  "Lease_signed_2024.pdf": {
+    "kind": "lease",
+    "date": "2024-01-01"
+  },
+  "statement_Q2_2025.pdf": {
+    "kind": "bank_statement",
+    "payments": 3
+  },
+  "scan0003.pdf": {
+    "kind": "medical_receipt",
+    "date": "2023-02-09",
+    "money": 70,
     "category": "gp_or_consultant"
   }
 }

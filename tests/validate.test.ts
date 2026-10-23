@@ -130,8 +130,8 @@ describe("end to end on the sample shoebox", () => {
     const { validated } = await run("fixtures/shoebox", FakeExtractor.forShoebox("fixtures/shoebox"), TODAY);
     const rent = validated.rentYears.reduce((s, y) => s + y.credit, 0);
     const health = validated.healthYears.reduce((s, y) => s + y.estimatedRelief, 0);
-    expect(rent).toBe(2160);
-    expect(health).toBe(249);
+    expect(rent).toBe(2240);
+    expect(health).toBe(263);
     expect(validated.findings.filter((f) => f.level === "review").map((f) => f.doc)).toEqual(["pharmacy-2025-04.txt"]);
   });
 });
@@ -145,5 +145,51 @@ describe("date normalising", () => {
     expect(toIsoDate("31st Dec 2024")).toBe("2024-12-31");
     expect(toIsoDate("March 12, 2025")).toBe("2025-03-12");
     expect(toIsoDate("31/02/2025")).toBe("31/02/2025"); // not a real day: left for the schema to reject
+  });
+});
+
+describe("bank statements", () => {
+  const text = "Statement\n01/04/2025 MARY BYRNE RENT 1,150.00 2,310.55\n03/04/2025 TESCO 45.20 2,265.35";
+  const statement = (payments: { date: string; amount: number; payee: string; line: string }[]): Extraction => ({
+    kind: "bank_statement", bank: null, accountHolder: null, periodFrom: null, periodTo: null, payments, evidence: {},
+  });
+
+  it("counts a payment whose line shows its date and amount", () => {
+    const v = validate([doc("s.pdf", text, statement([
+      { date: "2025-04-01", amount: 1150, payee: "MARY BYRNE", line: "01/04/2025 MARY BYRNE RENT 1,150.00 2,310.55" },
+    ]))], profile, TODAY);
+    expect(v.rentYears[0].rentPaid).toBe(1150);
+  });
+
+  it("holds back a payment the line doesn't support, and only that one", () => {
+    const v = validate([doc("s.pdf", text, statement([
+      { date: "2025-04-01", amount: 1150, payee: "MARY BYRNE", line: "01/04/2025 MARY BYRNE RENT 1,150.00 2,310.55" },
+      { date: "2025-04-01", amount: 1510, payee: "MARY BYRNE", line: "01/04/2025 MARY BYRNE RENT 1,150.00 2,310.55" }, // misread amount
+      { date: "2025-05-01", amount: 1150, payee: "MARY BYRNE", line: "01/05/2025 MARY BYRNE RENT 1,150.00" }, // line not in the PDF
+    ]))], profile, TODAY);
+    expect(v.rentYears[0].rentPaid).toBe(1150);
+    expect(v.findings.filter((f) => f.rule === "S1").map((f) => f.level)).toEqual(["review", "review"]);
+  });
+
+  it("prefers the statement line over an unchecked screenshot of the same payment", () => {
+    const screenshot: ParsedDoc = { name: "a.png", text: null, extraction: pay("2025-04-01", 1150) };
+    const v = validate([screenshot, doc("s.pdf", text, statement([
+      { date: "2025-04-01", amount: 1150, payee: "MARY BYRNE", line: "01/04/2025 MARY BYRNE RENT 1,150.00 2,310.55" },
+    ]))], profile, TODAY);
+    expect(v.rentYears[0].lines.map((l) => l.doc)).toEqual(["s.pdf (2025-04-01)"]);
+  });
+});
+
+describe("PDF input", () => {
+  it("reads a text PDF page by page and draws a scanned one", async () => {
+    const { readShoebox } = await import("../src/inputs");
+    const { docs } = await readShoebox("fixtures/shoebox");
+    const statement = docs.find((d) => d.name === "statement_Q2_2025.pdf")!;
+    expect(statement.pages).toHaveLength(2);
+    expect(statement.pages![1]).toContain("01/06/2025 MARY BYRNE RENT APT4 06-25 1,150.00");
+    const scan = docs.find((d) => d.name === "scan0003.pdf")!;
+    expect(scan.text).toBeNull();
+    expect(scan.images).toHaveLength(1);
+    expect(scan.images[0].subarray(1, 4).toString()).toBe("PNG");
   });
 });

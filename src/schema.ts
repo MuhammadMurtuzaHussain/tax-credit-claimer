@@ -39,6 +39,25 @@ export const RentPayment = z.object({
   evidence,
 });
 
+/** A bank statement: only the payments that look like rent, each with the statement line it came from. */
+export const BankStatement = z.object({
+  kind: z.literal("bank_statement"),
+  bank: z.string().nullable(),
+  accountHolder: z.string().nullable(),
+  periodFrom: isoDate.nullable(),
+  periodTo: isoDate.nullable(),
+  payments: z.array(
+    z.object({
+      date: isoDate,
+      amount: euro,
+      payee: z.string().min(1),
+      /** The whole statement line, copied exactly. Code checks the date and amount against it. */
+      line: z.string().min(1),
+    }),
+  ),
+  evidence,
+});
+
 export const MedicalReceipt = z.object({
   kind: z.literal("medical_receipt"),
   date: isoDate,
@@ -70,10 +89,11 @@ export const Other = z.object({
   evidence,
 });
 
-export const Extraction = z.discriminatedUnion("kind", [Lease, RentPayment, MedicalReceipt, Med2, Other]);
+export const Extraction = z.discriminatedUnion("kind", [Lease, RentPayment, BankStatement, MedicalReceipt, Med2, Other]);
 
 export type Lease = z.infer<typeof Lease>;
 export type RentPayment = z.infer<typeof RentPayment>;
+export type BankStatement = z.infer<typeof BankStatement>;
 export type MedicalReceipt = z.infer<typeof MedicalReceipt>;
 export type Med2 = z.infer<typeof Med2>;
 export type Extraction = z.infer<typeof Extraction>;

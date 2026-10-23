@@ -1,8 +1,9 @@
 // How well does the model read the sample shoebox?
 //
 // eval/truth.json holds the right answer for each fixture: its kind, the key
-// date and amount, and the medical category. The run also compares the final
-// euro totals with what a perfect reading would give.
+// date and amount, the medical category, and how many rent payments a
+// statement holds. The run also compares the final euro totals with what a
+// perfect reading would give.
 //
 // Usage:  pnpm eval                          (Ollama, gemma4:e4b)
 //         OLLAMA_MODEL=gemma4:26b pnpm eval
@@ -14,7 +15,7 @@ import type { Extractor } from "../src/model/extractor";
 import { OllamaExtractor } from "../src/model/ollama";
 import { run } from "../src/pipeline";
 
-type Truth = { kind: string; date?: string; money?: number; category?: string };
+type Truth = { kind: string; date?: string; money?: number; category?: string; payments?: number };
 
 const { values } = parseArgs({ options: { model: { type: "string", default: "ollama" } } });
 const dir = "fixtures/shoebox";
@@ -38,11 +39,13 @@ const rows = parsed.map((p) => {
     date: (x?.date as string | undefined) ?? (x?.coversTo as string | undefined) ?? (x?.startDate as string | undefined),
     money: (x?.amount as number | undefined) ?? (x?.total as number | undefined),
     category: x?.category as string | undefined,
+    payments: Array.isArray(x?.payments) ? x.payments.length : undefined,
   };
   const checks: [string, boolean][] = [];
   if (want.date) checks.push(["date", got.date === want.date]);
   if (want.money !== undefined) checks.push(["money", got.money === want.money]);
   if (want.category) checks.push(["category", got.category === want.category]);
+  if (want.payments !== undefined) checks.push(["payments", got.payments === want.payments]);
   if (got.kind === want.kind) kindOk++;
   fieldsAll += checks.length;
   fieldsOk += checks.filter(([, ok]) => ok).length;

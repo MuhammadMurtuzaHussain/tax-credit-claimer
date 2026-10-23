@@ -55,8 +55,8 @@ The person's effort is steps 1, 4 and 6. Everything else is the tool.
 
 | Area | In |
 | --- | --- |
-| Inputs | Folder of `.txt`, `.png`, `.jpg` (screenshots, photos, exported text) plus an optional `profile.json` |
-| Documents | Lease or tenancy agreement, rent payment (bank screenshot, transfer confirmation, landlord letter or statement), medical receipt, dentist's Med 2 |
+| Inputs | Folder of PDFs, `.png`, `.jpg`, `.webp`, `.txt` plus an optional `profile.json`. Text PDFs are read page by page with pdf.js; scanned PDFs (up to 3 pages) are drawn to images for Gemma's vision |
+| Documents | Lease or tenancy agreement, rent payment (bank screenshot, transfer confirmation, landlord letter), bank statement (rent lines only), medical receipt, dentist's Med 2 |
 | Reliefs | Rent Tax Credit (2022–2028); health expenses at the 20% standard rate |
 | Years | The current year (in-year route) plus the previous four (Income Tax Return route) |
 | Model | Gemma 4 E4B through local Ollama, behind an `Extractor` interface, with a fake for tests |
@@ -65,7 +65,9 @@ The person's effort is steps 1, 4 and 6. Everything else is the tool.
 
 ### Out of v1 (later)
 
-- PDFs and HEIC photos (needs local rasterising first)
+- HEIC photos (convert on import)
+- Statements that print dates without a year ("01 APR"): S1 can't match them yet
+- Scans longer than 3 pages (asked to split into one file per document)
 - Nursing home relief (40% rate), tuition fees, flat-rate expenses, Home Carer and other credits
 - Self-assessed / Form 11 route in ROS
 - Rent shared between flatmates who aren't jointly assessed (each claims their own share, so the tool would need to know which payments are yours)
@@ -153,6 +155,8 @@ The model **reads and proposes**. Code decides what counts, and all money is com
 | G4 | Only the current year and the previous four; the rent credit only for 2022–2028 | dropped |
 | G5 | Rent must be paid to the lease landlord (name match) and inside the lease term; no RTB number gives a note | review |
 | G6 | A landlord statement must cover one tax year | review |
+| S1 | A payment read off a bank statement must have its whole line copied, that line must be in the PDF, and it must show the same date and amount; when two documents show one payment, the one code checked wins | review (that line only) |
+| IN | A file that couldn't be opened (unsupported type, broken or very long scan) is listed, never silently dropped | review |
 | G7 | Rent credit = min(20% × rent, cap for that year and assessment) | (computed) |
 | G8 | Relative landlord, HAP/RAS, AHB landlord or not your home blocks the rent credit; unanswered questions show as a checklist | blocked / confirm |
 | H1 | Routine dental, routine eye care and cosmetic work are dropped whatever the receipt says | dropped |
@@ -205,16 +209,18 @@ A first-time renter with three open years should see roughly €1,000–€2,700
 7. Should we bundle Tesseract for images, or trust Gemma's vision with a "check by eye" flag?
 8. Licence: MIT (as Return Route) or AGPL (as Deis)? Currently MIT.
 
-## 13. What's built vs stubbed (2026-10-23)
+## 13. What's built vs stubbed (2026-10-23, after PDF support)
 
 | Piece | State |
 | --- | --- |
 | Folder reader, `profile.json` | Real |
 | `Extractor` interface | Real |
 | `FakeExtractor` (canned answers in `fixtures/fake-responses.json`, some deliberately wrong) | Stub, for tests and the demo |
-| `OllamaExtractor` (Gemma 4 E4B, classify then extract, structured output, localhost only) | Real; 17/17 kinds and 36/36 fields on the samples, including two images |
+| `OllamaExtractor` (Gemma 4 E4B, classify then extract, structured output, localhost only) | Real; 19/19 kinds and 40/40 fields on the samples (text, 2 images, 3 PDFs) |
 | Irish date normaliser ([src/dates.ts](src/dates.ts)) | Real, unit-tested |
 | Eval (`pnpm eval`, [eval/truth.json](eval/truth.json)) | Real, on synthetic samples only |
 | Guard rules G1–G8, H1–H5 | Real, unit-tested |
 | Claim sheet | Real; the form field names are partly unconfirmed |
-| PDFs, HEIC, OCR, desktop UI, eval on real documents | Not started |
+| PDF input ([src/inputs.ts](src/inputs.ts)): text layer via pdf.js, scans drawn to PNG locally | Real; 19/19 kinds and 40/40 fields with the 3 PDF samples |
+| Bank statements (S1, read a page at a time) | Real, unit-tested |
+| HEIC, OCR for images, desktop UI, eval on real documents | Not started |

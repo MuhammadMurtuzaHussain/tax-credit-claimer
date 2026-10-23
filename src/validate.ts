@@ -9,6 +9,7 @@ import {
   rentCreditCap,
   type HealthCategory,
 } from "./rules";
+import { datesIn } from "./dates";
 import type { Extraction, Lease, Med2, MedicalReceipt, Profile, RentPayment } from "./schema";
 
 // Gemma reads; this file decides. Every rule here is plain code the model
@@ -17,6 +18,7 @@ import type { Extraction, Lease, Med2, MedicalReceipt, Profile, RentPayment } fr
 //   G2 every amount, date and name must be quoted from the document (text docs);
 //   G3 the same payment or receipt is only counted once;
 //   G4 only the last four tax years (plus this one) can be claimed;
+//   S1 a payment read off a bank statement must match a real line of it, date and amount;
 //   G5 rent must be paid to the landlord on the lease, inside the lease term;
 //   G6 a landlord's statement must cover a single tax year;
 //   G7 the Rent Tax Credit is 20% of rent, capped per year;
@@ -89,11 +91,19 @@ export function grounded(doc: ParsedDoc, ev: Record<string, string>, field: stri
   if (quoted(doc.text, ev[field], value)) return true;
   // Small models often skip the quote. A name or amount printed verbatim is just as grounded.
   // Dates are printed in too many ways for that, so they still need a quote.
-  if (typeof value === "number") {
-    const printed = [value.toFixed(2), value.toLocaleString("en-IE", { minimumFractionDigits: 2 })];
-    return printed.some((p) => new RegExp(`(^|[^\\d.,])${p.replace(/[.,]/g, "\\$&")}(?![\\d])`).test(doc.text!));
-  }
+  if (typeof value === "number") return printsAmount(doc.text, value);
   return !/^\d{4}-\d{2}-\d{2}$/.test(value) && squash(doc.text).includes(squash(value));
+}
+
+/** The amount is printed in the text as a whole number of cents: "1150.00" or "1,150.00", not inside "11,150.00". */
+function printsAmount(text: string, value: number): boolean {
+  const printed = [value.toFixed(2), value.toLocaleString("en-IE", { minimumFractionDigits: 2 })];
+  return printed.some((p) => new RegExp(`(^|[^\\d.,])${p.replace(/[.,]/g, "\\$&")}(?![\\d])`).test(text));
+}
+
+/** S1: the statement line is really in the document and shows this date and amount. */
+function lineBacks(text: string, line: string, date: string, amount: number): boolean {
+  return squash(text).includes(squash(line)) && printsAmount(line, amount) && datesIn(line).includes(date);
 }
 
 function quoted(text: string, quote: string | undefined, value: string | number): boolean {
@@ -156,53 +166,75 @@ export function validate(docs: ParsedDoc[], profile: Profile, today: string): Va
   if (leases.length > 1) add(leases[0].doc.name, "G5", "note", "more than one lease found; using the latest one for landlord details");
   if (lease && !lease.rtbNumber) add(leaseDoc!, "G5", "note", "no RTB number on the lease. You can still claim, but Revenue may ask for it later");
 
+  // S1: a payment read from a bank statement must sit on a real line of that
+  // statement showing both its date and its amount. A line that doesn't is held back on its own.
+  const candidates: { name: string; p: RentPayment; checked: boolean }[] = [];
+  for (const { doc, x } of ok) {
+    if (x.kind === "rent_payment") candidates.push({ name: doc.name, p: x, checked: doc.text !== null });
+    if (x.kind !== "bank_statement") continue;
+    if (!x.payments.length) add(doc.name, "S1", "note", "no rent payments found on this statement");
+    for (const s of x.payments) {
+      const name = `${doc.name} (${s.date})`;
+      if (doc.text !== null && !lineBacks(doc.text, s.line, s.date, s.amount)) {
+        add(name, "S1", "review", `the line "${s.line}" doesn't show €${s.amount.toFixed(2)} on ${s.date}; check by eye`);
+        continue;
+      }
+      const p: RentPayment = {
+        kind: "rent_payment", date: s.date, amount: s.amount, payee: s.payee,
+        coversFrom: null, coversTo: null, reference: null, evidence: {},
+      };
+      candidates.push({ name, p, checked: doc.text !== null });
+    }
+  }
+
   const rentByYear = new Map<number, RentLine[]>();
   const seenRent = new Set<string>();
-  for (const { doc, x } of ok) {
-    if (x.kind !== "rent_payment") continue;
-    const p: RentPayment = x;
+  // When two documents show the same payment, keep the one code could check against its text.
+  candidates.sort((a, b) => Number(b.checked) - Number(a.checked));
+  for (const { name, p } of candidates) {
     // G6: a statement covering a period counts in the year it covers, and must not straddle years.
     if (p.coversFrom && p.coversTo && yearOf(p.coversFrom) !== yearOf(p.coversTo)) {
-      add(doc.name, "G6", "review", "this statement spans two tax years; ask the landlord for one per year");
+      add(name, "G6", "review", "this statement spans two tax years; ask the landlord for one per year");
       continue;
     }
     const date = p.coversTo ?? p.date;
     const year = yearOf(date);
     const key = `${p.date}|${cents(p.amount)}`;
     if (seenRent.has(key)) {
-      add(doc.name, "G3", "dropped", `same payment as another document (${p.date}, €${p.amount.toFixed(2)})`);
+      add(name, "G3", "dropped", `same payment as another document (${p.date}, €${p.amount.toFixed(2)})`);
       continue;
     }
     seenRent.add(key);
     if (year < RENT_CREDIT_YEARS.first || year > RENT_CREDIT_YEARS.last) {
-      add(doc.name, "G4", "dropped", `the Rent Tax Credit doesn't exist for ${year}`);
+      add(name, "G4", "dropped", `the Rent Tax Credit doesn't exist for ${year}`);
       continue;
     }
     if (!window.has(year)) {
-      add(doc.name, "G4", "dropped", `${year} can no longer be claimed (deadline was ${claimDeadline(year)})`);
+      add(name, "G4", "dropped", `${year} can no longer be claimed (deadline was ${claimDeadline(year)})`);
       continue;
     }
     if (!lease) {
-      add(doc.name, "G5", "note", "no lease in the shoebox, so the landlord couldn't be checked");
+      add(name, "G5", "note", "no lease in the shoebox, so the landlord couldn't be checked");
     } else {
       if (!surnameMatch(p.payee, lease.landlordName)) {
-        add(doc.name, "G5", "review", `paid to "${p.payee}", but the lease landlord is "${lease.landlordName}"`);
+        add(name, "G5", "review", `paid to "${p.payee}", but the lease landlord is "${lease.landlordName}"`);
         continue;
       }
       const from = p.coversFrom ?? p.date;
       if (from < lease.startDate || (lease.endDate && date > lease.endDate)) {
-        add(doc.name, "G5", "review", `payment falls outside the lease term (${lease.startDate} to ${lease.endDate ?? "open"})`);
+        add(name, "G5", "review", `payment falls outside the lease term (${lease.startDate} to ${lease.endDate ?? "open"})`);
         continue;
       }
     }
     const lines = rentByYear.get(year) ?? [];
-    lines.push({ doc: doc.name, date: p.date, amount: p.amount });
+    lines.push({ doc: name, date: p.date, amount: p.amount });
     rentByYear.set(year, lines);
   }
 
   const rentYears: RentYear[] = [...rentByYear.entries()]
     .sort(([a], [b]) => a - b)
     .map(([year, lines]) => {
+      lines.sort((a, b) => a.date.localeCompare(b.date));
       const paid = lines.reduce((s, l) => s + cents(l.amount), 0);
       const cap = cents(rentCreditCap(year, profile.jointlyAssessed));
       return {

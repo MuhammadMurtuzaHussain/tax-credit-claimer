@@ -27,7 +27,7 @@ const extractor: Extractor = values.model === "fake" ? FakeExtractor.forShoebox(
 
 console.log(`Reading ${dir} with ${extractor.label}`);
 const { parsed, validated, skipped } = await run(dir, extractor, today, (name) => console.log(`  · ${name}`));
-for (const s of skipped) console.log(`  - skipped ${s} (unsupported file type)`);
+for (const s of skipped) console.log(`  - skipped ${s.name} (${s.why})`);
 
 await mkdir(values.out!, { recursive: true });
 const sheetPath = path.join(values.out!, "claim-sheet.md");

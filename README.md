@@ -17,6 +17,8 @@ Gemma 4 runs on your laptop through [Ollama](https://ollama.com) and reads each 
 | | The rent credit is 20% of rent paid, capped per year (€500 for 2022–23, €1,000 for 2024–28) |
 | | Routine dental, routine eye care and cosmetic work never count. Non-routine dental needs a Med 2 |
 
+Bank statements get one more check: Gemma lists the rent payments and copies each statement line, and code only counts a payment if that exact line is in the PDF with the same date and amount. When a screenshot and a statement show the same payment, the statement line wins because code could check it.
+
 The rules are in [src/validate.ts](src/validate.ts).
 
 ## Run it
@@ -33,7 +35,7 @@ pnpm demo
 
 Then open `out/claim-sheet.md`.
 
-On your own documents with local Gemma (`.txt`, `.png` and `.jpg` for now):
+On your own documents with local Gemma. It reads PDFs (leases, bank statements, scans), `.png`, `.jpg`, `.webp` and `.txt`:
 
 ```bash
 ollama pull gemma4:e4b
@@ -51,12 +53,13 @@ pnpm test
 
 ## How well Gemma reads
 
-`pnpm eval` runs the sample shoebox (15 text documents and 2 images) through the model and checks each answer against [eval/truth.json](eval/truth.json). Gemma 4 E4B on an M-series Mac:
+`pnpm eval` runs the sample shoebox (14 text files, 2 images and 3 PDFs: a lease, a two-page bank statement and a scanned receipt) through the model and checks each answer against [eval/truth.json](eval/truth.json). Gemma 4 E4B on an M-series Mac:
 
 | Prompt | Kinds right | Fields right | Euro found | Time per doc |
 | --- | --- | --- | --- | --- |
 | One call, whole schema | 9/15 | not measured | €899 of €2,147.50 | about 12 s |
-| Classify, then extract, plus code date clean-up | **17/17** | **36/36** | **€2,417.50 of €2,417.50** | 3.1 s |
+| Classify, then extract, plus code date clean-up | 17/17 | 36/36 | €2,417.50 of €2,417.50 | 3.1 s |
+| Same, with the 3 PDFs added | **19/19** | **40/40** | **€2,511.50 of €2,511.50** | 4.1 s |
 
 The samples are clean and synthetic. Real receipts will be harder.
 

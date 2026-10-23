@@ -1,38 +1,12 @@
-import { readdir, readFile } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { normaliseDates } from "./dates";
+import { readShoebox } from "./inputs";
 import type { Extractor, InputDoc } from "./model/extractor";
 import { Extraction, Profile } from "./schema";
 import { validate, type ParsedDoc, type Validated } from "./validate";
 
 // shoebox folder → one model call per document → schema parse → guard → result.
-
-const MIME: Record<string, string> = {
-  ".txt": "text/plain",
-  ".md": "text/plain",
-  ".eml": "text/plain",
-  ".png": "image/png",
-  ".jpg": "image/jpeg",
-  ".jpeg": "image/jpeg",
-  ".webp": "image/webp",
-};
-
-export async function readShoebox(dir: string): Promise<{ docs: InputDoc[]; skipped: string[] }> {
-  const docs: InputDoc[] = [];
-  const skipped: string[] = [];
-  for (const name of (await readdir(dir)).sort()) {
-    if (name.startsWith(".") || name === "profile.json") continue;
-    const mime = MIME[path.extname(name).toLowerCase()];
-    if (!mime) {
-      skipped.push(name); // PDFs and HEIC are v2
-      continue;
-    }
-    const bytes = await readFile(path.join(dir, name));
-    const isText = mime === "text/plain";
-    docs.push({ name, mime, text: isText ? bytes.toString("utf8") : null, bytes: isText ? null : bytes });
-  }
-  return { docs, skipped };
-}
 
 export async function readProfile(dir: string): Promise<Profile> {
   try {
@@ -66,5 +40,7 @@ export async function run(dir: string, extractor: Extractor, today: string, onDo
     });
   }
   const validated: Validated = validate(parsed, profile, today);
+  // Files we couldn't open still belong on the sheet, so nothing disappears silently.
+  for (const s of skipped) validated.findings.push({ doc: s.name, rule: "IN", level: "review", message: `not read: ${s.why}` });
   return { parsed, validated, skipped };
 }
