@@ -1,0 +1,649 @@
+{
+  "extractor": "ollama gemma4:e4b",
+  "kindOk": 17,
+  "fieldsOk": 36,
+  "fieldsAll": 36,
+  "seconds": 52.666,
+  "rent": 2160,
+  "health": 257.5,
+  "findings": [
+    {
+      "doc": "IMG_2025-04-01-rent.png",
+      "rule": "G2",
+      "level": "note",
+      "message": "read from an image: check the amount and date by eye"
+    },
+    {
+      "doc": "IMG_receipt-photo.png",
+      "rule": "G2",
+      "level": "note",
+      "message": "read from an image: check the amount and date by eye"
+    },
+    {
+      "doc": "takeaway-receipt.txt",
+      "rule": "G1",
+      "level": "dropped",
+      "message": "not a rent or medical document (takeaway receipt)"
+    },
+    {
+      "doc": "rent-2025-02-transfer.txt",
+      "rule": "G3",
+      "level": "dropped",
+      "message": "same payment as another document (2025-02-01, €1150.00)"
+    },
+    {
+      "doc": "consultant-2021.txt",
+      "rule": "G4",
+      "level": "dropped",
+      "message": "2021 can no longer be claimed (deadline was 2025-12-31)"
+    },
+    {
+      "doc": "dental-cleaning-2025.txt",
+      "rule": "H1",
+      "level": "dropped",
+      "message": "routine dental doesn't qualify for health expenses relief"
+    },
+    {
+      "doc": "physio-2022-11.txt",
+      "rule": "H5",
+      "level": "note",
+      "message": "€30.00 paid back by insurer or HSE, taken off"
+    }
+  ],
+  "rows": [
+    {
+      "file": "IMG_2025-04-01-rent.png",
+      "want": {
+        "kind": "rent_payment",
+        "date": "2025-04-01",
+        "money": 1150
+      },
+      "got": {
+        "kind": "rent_payment",
+        "date": "2025-04-01",
+        "money": 1150
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "rent_payment",
+        "date": "2025-04-01",
+        "amount": 1150,
+        "payee": "MARY BYRNE",
+        "coversFrom": null,
+        "coversTo": null,
+        "reference": "RENT APT4 04-25",
+        "evidence": {
+          "date": "1 Apr 2025",
+          "amount": "€1,150.00",
+          "payee": "MARY BYRNE",
+          "reference": "RENT APT4 04-25"
+        }
+      }
+    },
+    {
+      "file": "IMG_receipt-photo.png",
+      "want": {
+        "kind": "medical_receipt",
+        "date": "2024-11-18",
+        "money": 200,
+        "category": "gp_or_consultant"
+      },
+      "got": {
+        "kind": "medical_receipt",
+        "date": "2024-11-18",
+        "money": 200,
+        "category": "gp_or_consultant"
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "medical_receipt",
+        "date": "2024-11-18",
+        "provider": "SAMPLE CONSULTANT ROOMS",
+        "patient": "Aoife Sample",
+        "description": "Dermatology consultation",
+        "category": "gp_or_consultant",
+        "total": 200,
+        "lineItems": [
+          {
+            "description": "Dermatology consultation",
+            "amount": 200
+          }
+        ],
+        "reimbursed": 0,
+        "prescribedOrReferred": false,
+        "evidence": {
+          "date": "18/11/2024",
+          "provider": "SAMPLE CONSULTANT ROOMS",
+          "patient": "Aoife Sample",
+          "description": "Dermatology consultation",
+          "category": "gp_or_consultant",
+          "total": "€200.00",
+          "reimbursed": "0",
+          "prescribedOrReferred": "false",
+          "evidence_total": "€200.00"
+        }
+      }
+    },
+    {
+      "file": "consultant-2021.txt",
+      "want": {
+        "kind": "medical_receipt",
+        "date": "2021-05-05",
+        "money": 120,
+        "category": "gp_or_consultant"
+      },
+      "got": {
+        "kind": "medical_receipt",
+        "date": "2021-05-05",
+        "money": 120,
+        "category": "gp_or_consultant"
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "medical_receipt",
+        "date": "2021-05-05",
+        "provider": "Sample Consultant Rooms",
+        "patient": null,
+        "description": "Consultation fee",
+        "category": "gp_or_consultant",
+        "total": 120,
+        "lineItems": [
+          {
+            "description": "Consultation fee",
+            "amount": 120
+          }
+        ],
+        "reimbursed": 0,
+        "prescribedOrReferred": false,
+        "evidence": {
+          "date": "05/05/2021",
+          "provider": "Sample Consultant Rooms",
+          "description": "Consultation fee",
+          "category": "gp_or_consultant",
+          "total": "€120.00",
+          "reimbursed": "0",
+          "prescribedOrReferred": "false"
+        }
+      }
+    },
+    {
+      "file": "dental-cleaning-2025.txt",
+      "want": {
+        "kind": "medical_receipt",
+        "date": "2025-06-03",
+        "money": 80,
+        "category": "routine_dental"
+      },
+      "got": {
+        "kind": "medical_receipt",
+        "date": "2025-06-03",
+        "money": 80,
+        "category": "routine_dental"
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "medical_receipt",
+        "date": "2025-06-03",
+        "provider": "Example Dental Practice",
+        "patient": "Aoife Sample",
+        "description": "Check-up, scale and polish",
+        "category": "routine_dental",
+        "total": 80,
+        "lineItems": [
+          {
+            "description": "Check-up, scale and polish",
+            "amount": 80
+          }
+        ],
+        "reimbursed": 0,
+        "prescribedOrReferred": false,
+        "evidence": {
+          "date": "03/06/2025",
+          "provider": "Example Dental Practice",
+          "patient": "Aoife Sample",
+          "description": "Check-up, scale and polish ..... €80.00",
+          "category": "routine_dental",
+          "total": "€80.00",
+          "reimbursed": "null",
+          "prescribedOrReferred": "false"
+        }
+      }
+    },
+    {
+      "file": "dental-crown-2024-receipt.txt",
+      "want": {
+        "kind": "medical_receipt",
+        "date": "2024-09-20",
+        "money": 950,
+        "category": "non_routine_dental"
+      },
+      "got": {
+        "kind": "medical_receipt",
+        "date": "2024-09-20",
+        "money": 950,
+        "category": "non_routine_dental"
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "medical_receipt",
+        "date": "2024-09-20",
+        "provider": "Example Dental Practice",
+        "patient": "Aoife Sample",
+        "description": "Porcelain crown, upper left 6",
+        "category": "non_routine_dental",
+        "total": 950,
+        "lineItems": [
+          {
+            "description": "Porcelain crown, upper left 6",
+            "amount": 950
+          }
+        ],
+        "reimbursed": 0,
+        "prescribedOrReferred": false,
+        "evidence": {
+          "date": "20/09/2024",
+          "provider": "Example Dental Practice",
+          "patient": "Aoife Sample",
+          "description": "Porcelain crown, upper left 6",
+          "category": "non_routine_dental",
+          "total": "€950.00",
+          "reimbursed": "null",
+          "prescribedOrReferred": "false",
+          "evidence_total": "€950.00 PAID - Med 2 issued"
+        }
+      }
+    },
+    {
+      "file": "gp-2025-03.txt",
+      "want": {
+        "kind": "medical_receipt",
+        "date": "2025-03-12",
+        "money": 65,
+        "category": "gp_or_consultant"
+      },
+      "got": {
+        "kind": "medical_receipt",
+        "date": "2025-03-12",
+        "money": 65,
+        "category": "gp_or_consultant"
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "medical_receipt",
+        "date": "2025-03-12",
+        "provider": "Salthill Sample Medical Centre",
+        "patient": "Aoife Sample",
+        "description": "GP consultation",
+        "category": "gp_or_consultant",
+        "total": 65,
+        "lineItems": [
+          {
+            "description": "GP consultation",
+            "amount": 65
+          }
+        ],
+        "reimbursed": 0,
+        "prescribedOrReferred": false,
+        "evidence": {
+          "date": "12 March 2025",
+          "total": "€65.00",
+          "description": "GP consultation ........ €65.00"
+        }
+      }
+    },
+    {
+      "file": "lease-2024.txt",
+      "want": {
+        "kind": "lease",
+        "date": "2024-01-01"
+      },
+      "got": {
+        "kind": "lease",
+        "date": "2024-01-01"
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "lease",
+        "landlordName": "Mary Byrne",
+        "landlordAddress": "3 Sample Terrace, Oranmore, Co. Galway",
+        "propertyAddress": "Apartment 4, 12 Example Road, Galway",
+        "eircode": "H91 X0X0",
+        "rtbNumber": "RT-SAMPLE-000123",
+        "monthlyRent": 1100,
+        "startDate": "2024-01-01",
+        "endDate": null,
+        "tenants": [
+          "Aoife Sample"
+        ],
+        "evidence": {
+          "landlordName": "Mary Byrne",
+          "landlordAddress": "3 Sample Terrace, Oranmore, Co. Galway",
+          "propertyAddress": "Apartment 4, 12 Example Road, Galway",
+          "eircode": "H91 X0X0",
+          "rtbNumber": "RT-SAMPLE-000123",
+          "monthlyRent": "EUR 1,100.00",
+          "startDate": "1 January 2024",
+          "endDate": "null",
+          "tenants": "Aoife Sample"
+        }
+      }
+    },
+    {
+      "file": "med2-2024.txt",
+      "want": {
+        "kind": "med2",
+        "money": 950
+      },
+      "got": {
+        "kind": "med2",
+        "money": 950
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "med2",
+        "taxYear": 2024,
+        "dentist": "Dr. Example Dentist, Example Dental Practice",
+        "patient": "Aoife Sample",
+        "treatment": "Crown",
+        "amount": 950,
+        "evidence": {
+          "taxYear": "2024",
+          "dentist": "Dr. Example Dentist, Example Dental Practice",
+          "patient": "Aoife Sample",
+          "treatment": "Crown",
+          "amount": "€950.00"
+        }
+      }
+    },
+    {
+      "file": "pharmacy-2025-04.txt",
+      "want": {
+        "kind": "medical_receipt",
+        "date": "2025-04-14",
+        "money": 42.5,
+        "category": "prescribed_medicine"
+      },
+      "got": {
+        "kind": "medical_receipt",
+        "date": "2025-04-14",
+        "money": 42.5,
+        "category": "prescribed_medicine"
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "medical_receipt",
+        "date": "2025-04-14",
+        "provider": "Sample Pharmacy",
+        "patient": null,
+        "description": "Prescription items (Dr. Sample) x2",
+        "category": "prescribed_medicine",
+        "total": 42.5,
+        "lineItems": [
+          {
+            "description": "Prescription items (Dr. Sample) x2",
+            "amount": 42.5
+          }
+        ],
+        "reimbursed": 0,
+        "prescribedOrReferred": true,
+        "evidence": {
+          "date": "14/04/2025",
+          "description": "Prescription items (Dr. Sample) x2",
+          "total": "€42.50",
+          "prescribedOrReferred": "Prescription items (Dr. Sample)"
+        }
+      }
+    },
+    {
+      "file": "physio-2022-11.txt",
+      "want": {
+        "kind": "medical_receipt",
+        "date": "2022-11-08",
+        "money": 60,
+        "category": "physio_or_similar_referred"
+      },
+      "got": {
+        "kind": "medical_receipt",
+        "date": "2022-11-08",
+        "money": 60,
+        "category": "physio_or_similar_referred"
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "medical_receipt",
+        "date": "2022-11-08",
+        "provider": "Sample Physiotherapy Clinic",
+        "patient": "Aoife Sample",
+        "description": "Physiotherapy session",
+        "category": "physio_or_similar_referred",
+        "total": 60,
+        "lineItems": [
+          {
+            "description": "Physiotherapy session",
+            "amount": 60
+          }
+        ],
+        "reimbursed": 30,
+        "prescribedOrReferred": true,
+        "evidence": {
+          "date": "08/11/2022",
+          "provider": "Sample Physiotherapy Clinic",
+          "patient": "Aoife Sample",
+          "description": "Physiotherapy session",
+          "category": "physio_or_similar_referred",
+          "total": "€60.00",
+          "reimbursed": "€30.00",
+          "prescribedOrReferred": "Referred by: Dr. Sample (GP)"
+        }
+      }
+    },
+    {
+      "file": "rent-2024-landlord-statement.txt",
+      "want": {
+        "kind": "rent_payment",
+        "money": 13200
+      },
+      "got": {
+        "kind": "rent_payment",
+        "date": "2025-01-15",
+        "money": 13200
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "rent_payment",
+        "date": "2025-01-15",
+        "amount": 13200,
+        "payee": "Mary Byrne",
+        "coversFrom": "1 January 2024",
+        "coversTo": "31 December 2024",
+        "reference": "Apartment 4, 12 Example Road, Galway",
+        "evidence": {
+          "kind": "rent_payment",
+          "date": "15/01/2025",
+          "amount": "€13,200.00",
+          "payee": "Mary Byrne",
+          "coversFrom": "1 January 2024",
+          "coversTo": "31 December 2024",
+          "reference": "Apartment 4, 12 Example Road, Galway"
+        }
+      }
+    },
+    {
+      "file": "rent-2025-01-transfer.txt",
+      "want": {
+        "kind": "rent_payment",
+        "date": "2025-01-01",
+        "money": 1150
+      },
+      "got": {
+        "kind": "rent_payment",
+        "date": "2025-01-01",
+        "money": 1150
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "rent_payment",
+        "date": "2025-01-01",
+        "amount": 1150,
+        "payee": "MARY BYRNE",
+        "coversFrom": null,
+        "coversTo": null,
+        "reference": "RENT APT4 01-25",
+        "evidence": {
+          "kind": "rent_payment",
+          "date": "01/01/2025",
+          "amount": "€1,150.00",
+          "payee": "MARY BYRNE",
+          "coversFrom": "null",
+          "coversTo": "null",
+          "reference": "RENT APT4 01-25"
+        }
+      }
+    },
+    {
+      "file": "rent-2025-02-transfer-copy.txt",
+      "want": {
+        "kind": "rent_payment",
+        "date": "2025-02-01",
+        "money": 1150
+      },
+      "got": {
+        "kind": "rent_payment",
+        "date": "2025-02-01",
+        "money": 1150
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "rent_payment",
+        "date": "2025-02-01",
+        "amount": 1150,
+        "payee": "MARY BYRNE",
+        "coversFrom": null,
+        "coversTo": null,
+        "reference": "RENT APT4 02-25",
+        "evidence": {
+          "kind": "rent_payment",
+          "date": "01/02/2025",
+          "amount": "€1,150.00",
+          "payee": "MARY BYRNE",
+          "coversFrom": "null",
+          "coversTo": "null",
+          "reference": "RENT APT4 02-25"
+        }
+      }
+    },
+    {
+      "file": "rent-2025-02-transfer.txt",
+      "want": {
+        "kind": "rent_payment",
+        "date": "2025-02-01",
+        "money": 1150
+      },
+      "got": {
+        "kind": "rent_payment",
+        "date": "2025-02-01",
+        "money": 1150
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "rent_payment",
+        "date": "2025-02-01",
+        "amount": 1150,
+        "payee": "MARY BYRNE",
+        "coversFrom": null,
+        "coversTo": null,
+        "reference": "RENT APT4 02-25",
+        "evidence": {
+          "kind": "rent_payment",
+          "date": "01/02/2025",
+          "amount": "€1,150.00",
+          "payee": "MARY BYRNE",
+          "coversFrom": "null",
+          "coversTo": "null",
+          "reference": "RENT APT4 02-25"
+        }
+      }
+    },
+    {
+      "file": "rent-2025-03-transfer.txt",
+      "want": {
+        "kind": "rent_payment",
+        "date": "2025-03-01",
+        "money": 1150
+      },
+      "got": {
+        "kind": "rent_payment",
+        "date": "2025-03-01",
+        "money": 1150
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "rent_payment",
+        "date": "2025-03-01",
+        "amount": 1150,
+        "payee": "MARY BYRNE",
+        "coversFrom": null,
+        "coversTo": null,
+        "reference": "RENT APT4 03-25",
+        "evidence": {
+          "kind": "rent_payment",
+          "date": "01/03/2025",
+          "amount": "€1,150.00",
+          "payee": "MARY BYRNE",
+          "coversFrom": "null",
+          "coversTo": "null",
+          "reference": "RENT APT4 03-25"
+        }
+      }
+    },
+    {
+      "file": "rent-2026-10-transfer.txt",
+      "want": {
+        "kind": "rent_payment",
+        "date": "2026-10-01",
+        "money": 1200
+      },
+      "got": {
+        "kind": "rent_payment",
+        "date": "2026-10-01",
+        "money": 1200
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "rent_payment",
+        "date": "2026-10-01",
+        "amount": 1200,
+        "payee": "MARY BYRNE",
+        "coversFrom": null,
+        "coversTo": null,
+        "reference": "RENT APT4 OCT",
+        "evidence": {
+          "kind": "rent_payment",
+          "date": "01/10/2026",
+          "amount": "€1,200.00",
+          "payee": "MARY BYRNE",
+          "coversFrom": "null",
+          "coversTo": "null",
+          "reference": "RENT APT4 OCT"
+        }
+      }
+    },
+    {
+      "file": "takeaway-receipt.txt",
+      "want": {
+        "kind": "other"
+      },
+      "got": {
+        "kind": "other"
+      },
+      "wrong": [],
+      "raw": {
+        "kind": "other",
+        "why": "takeaway receipt",
+        "evidence": {
+          "reason": "takeaway-receipt.txt"
+        }
+      }
+    }
+  ]
+}

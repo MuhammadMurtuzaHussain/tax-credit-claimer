@@ -78,9 +78,6 @@ export type MedicalReceipt = z.infer<typeof MedicalReceipt>;
 export type Med2 = z.infer<typeof Med2>;
 export type Extraction = z.infer<typeof Extraction>;
 
-/** JSON Schema handed to Ollama's `format`, so Gemma's output is constrained to this shape. */
-export const extractionJsonSchema = z.toJSONSchema(Extraction);
-
 /** Optional `profile.json` in the shoebox: the questions a document can't answer. */
 export const Profile = z.object({
   name: z.string().nullable().default(null),

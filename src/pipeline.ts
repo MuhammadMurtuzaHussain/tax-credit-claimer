@@ -1,5 +1,6 @@
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
+import { normaliseDates } from "./dates";
 import type { Extractor, InputDoc } from "./model/extractor";
 import { Extraction, Profile } from "./schema";
 import { validate, type ParsedDoc, type Validated } from "./validate";
@@ -55,10 +56,11 @@ export async function run(dir: string, extractor: Extractor, today: string, onDo
       parsed.push({ name: doc.name, text: doc.text, extraction: null, parseError: `model call failed: ${(e as Error).message}` });
       continue;
     }
-    const r = Extraction.safeParse(raw);
+    const r = Extraction.safeParse(normaliseDates(raw));
     parsed.push({
       name: doc.name,
       text: doc.text,
+      raw,
       extraction: r.success ? r.data : null,
       parseError: r.success ? undefined : r.error.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; "),
     });

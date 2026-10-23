@@ -37,6 +37,14 @@ describe("G2 grounding", () => {
     expect(grounded(d, { total: "Total: €52.50" }, "total", 52.5)).toBe(false);
     expect(grounded(d, { total: "Total: €42.50" }, "total", 52.5)).toBe(false);
   });
+  it("accepts a value printed verbatim when the model skipped the quote", () => {
+    const r: ParsedDoc = { name: "x", text: "Sample Pharmacy\nTotal: €1,042.50", extraction: null };
+    expect(grounded(r, {}, "provider", "Sample Pharmacy")).toBe(true);
+    expect(grounded(r, {}, "total", 1042.5)).toBe(true);
+    expect(grounded(r, {}, "total", 42.5)).toBe(false); // "42.50" inside "1,042.50" doesn't count
+    expect(grounded(r, {}, "provider", "Other Pharmacy")).toBe(false);
+    expect(grounded(r, {}, "date", "2025-04-14")).toBe(false);
+  });
   it("accepts a two-digit year in a date", () => {
     const short: ParsedDoc = { name: "x", text: "Paid 14/04/25", extraction: null };
     expect(grounded(short, { date: "14/04/25" }, "date", "2025-04-14")).toBe(true);
@@ -122,8 +130,20 @@ describe("end to end on the sample shoebox", () => {
     const { validated } = await run("fixtures/shoebox", FakeExtractor.forShoebox("fixtures/shoebox"), TODAY);
     const rent = validated.rentYears.reduce((s, y) => s + y.credit, 0);
     const health = validated.healthYears.reduce((s, y) => s + y.estimatedRelief, 0);
-    expect(rent).toBe(1930);
-    expect(health).toBe(209);
+    expect(rent).toBe(2160);
+    expect(health).toBe(249);
     expect(validated.findings.filter((f) => f.level === "review").map((f) => f.doc)).toEqual(["pharmacy-2025-04.txt"]);
+  });
+});
+
+describe("date normalising", () => {
+  it("reads Irish dates day first", async () => {
+    const { toIsoDate } = await import("../src/dates");
+    expect(toIsoDate("01/02/2025")).toBe("2025-02-01");
+    expect(toIsoDate("14.04.25")).toBe("2025-04-14");
+    expect(toIsoDate("1 January 2024")).toBe("2024-01-01");
+    expect(toIsoDate("31st Dec 2024")).toBe("2024-12-31");
+    expect(toIsoDate("March 12, 2025")).toBe("2025-03-12");
+    expect(toIsoDate("31/02/2025")).toBe("31/02/2025"); // not a real day: left for the schema to reject
   });
 });

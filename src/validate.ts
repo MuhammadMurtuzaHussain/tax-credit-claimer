@@ -32,6 +32,8 @@ export type ParsedDoc = {
   name: string;
   text: string | null;
   extraction: Extraction | null;
+  /** The model's answer as it came back, kept for the audit trail. */
+  raw?: unknown;
   parseError?: string;
 };
 
@@ -81,11 +83,21 @@ const euro = (c: number) => c / 100;
 const yearOf = (iso: string) => Number(iso.slice(0, 4));
 const squash = (s: string) => s.toLowerCase().replace(/[\s,]+/g, " ").trim();
 
-/** G2: the evidence for `field` is really in the document, and (for numbers) really says that number. */
+/** G2: the value is really in the document, either through its evidence quote or printed as-is. */
 export function grounded(doc: ParsedDoc, ev: Record<string, string>, field: string, value: string | number): boolean {
   if (doc.text === null) return true; // images are checked by eye, see the "note" finding
-  const quote = ev[field];
-  if (!quote || !squash(doc.text).includes(squash(quote))) return false;
+  if (quoted(doc.text, ev[field], value)) return true;
+  // Small models often skip the quote. A name or amount printed verbatim is just as grounded.
+  // Dates are printed in too many ways for that, so they still need a quote.
+  if (typeof value === "number") {
+    const printed = [value.toFixed(2), value.toLocaleString("en-IE", { minimumFractionDigits: 2 })];
+    return printed.some((p) => new RegExp(`(^|[^\\d.,])${p.replace(/[.,]/g, "\\$&")}(?![\\d])`).test(doc.text!));
+  }
+  return !/^\d{4}-\d{2}-\d{2}$/.test(value) && squash(doc.text).includes(squash(value));
+}
+
+function quoted(text: string, quote: string | undefined, value: string | number): boolean {
+  if (!quote || !squash(text).includes(squash(quote))) return false;
   if (typeof value === "number") {
     const numbers = (quote.match(/\d[\d,]*(?:\.\d{1,2})?/g) ?? []).map((n) => Number(n.replace(/,/g, "")));
     return numbers.some((n) => cents(n) === cents(value));

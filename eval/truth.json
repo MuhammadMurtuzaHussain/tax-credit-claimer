@@ -1,0 +1,93 @@
+{
+  "_totals": {
+    "rent": 2160,
+    "health": 257.5
+  },
+  "consultant-2021.txt": {
+    "kind": "medical_receipt",
+    "date": "2021-05-05",
+    "money": 120,
+    "category": "gp_or_consultant"
+  },
+  "dental-cleaning-2025.txt": {
+    "kind": "medical_receipt",
+    "date": "2025-06-03",
+    "money": 80,
+    "category": "routine_dental"
+  },
+  "dental-crown-2024-receipt.txt": {
+    "kind": "medical_receipt",
+    "date": "2024-09-20",
+    "money": 950,
+    "category": "non_routine_dental"
+  },
+  "gp-2025-03.txt": {
+    "kind": "medical_receipt",
+    "date": "2025-03-12",
+    "money": 65,
+    "category": "gp_or_consultant"
+  },
+  "lease-2024.txt": {
+    "kind": "lease",
+    "date": "2024-01-01"
+  },
+  "med2-2024.txt": {
+    "kind": "med2",
+    "money": 950
+  },
+  "pharmacy-2025-04.txt": {
+    "kind": "medical_receipt",
+    "date": "2025-04-14",
+    "money": 42.5,
+    "category": "prescribed_medicine"
+  },
+  "physio-2022-11.txt": {
+    "kind": "medical_receipt",
+    "date": "2022-11-08",
+    "money": 60,
+    "category": "physio_or_similar_referred"
+  },
+  "rent-2024-landlord-statement.txt": {
+    "kind": "rent_payment",
+    "money": 13200
+  },
+  "rent-2025-01-transfer.txt": {
+    "kind": "rent_payment",
+    "date": "2025-01-01",
+    "money": 1150
+  },
+  "rent-2025-02-transfer-copy.txt": {
+    "kind": "rent_payment",
+    "date": "2025-02-01",
+    "money": 1150
+  },
+  "rent-2025-02-transfer.txt": {
+    "kind": "rent_payment",
+    "date": "2025-02-01",
+    "money": 1150
+  },
+  "rent-2025-03-transfer.txt": {
+    "kind": "rent_payment",
+    "date": "2025-03-01",
+    "money": 1150
+  },
+  "rent-2026-10-transfer.txt": {
+    "kind": "rent_payment",
+    "date": "2026-10-01",
+    "money": 1200
+  },
+  "takeaway-receipt.txt": {
+    "kind": "other"
+  },
+  "IMG_2025-04-01-rent.png": {
+    "kind": "rent_payment",
+    "date": "2025-04-01",
+    "money": 1150
+  },
+  "IMG_receipt-photo.png": {
+    "kind": "medical_receipt",
+    "date": "2024-11-18",
+    "money": 200,
+    "category": "gp_or_consultant"
+  }
+}

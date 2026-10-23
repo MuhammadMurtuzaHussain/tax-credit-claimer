@@ -8,6 +8,7 @@
     "claim": "tsx src/cli.ts",
     "demo": "tsx src/cli.ts fixtures/shoebox --model fake --today 2026-10-22",
     "test": "vitest run",
+    "eval": "tsx eval/run.ts",
     "typecheck": "tsc --noEmit"
   },
   "packageManager": "pnpm@12.8.1",
