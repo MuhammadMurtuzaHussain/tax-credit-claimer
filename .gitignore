@@ -3,3 +3,5 @@ out
 # Your real shoebox. Never commit it.
 shoebox
 !fixtures/shoebox
+# Your real documents, their truth file and every reading of them. See eval/README.md.
+eval/private/

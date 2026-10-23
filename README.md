@@ -61,7 +61,7 @@ pnpm test
 | Classify, then extract, plus code date clean-up | 17/17 | 36/36 | €2,417.50 of €2,417.50 | 3.1 s |
 | Same, with the 3 PDFs added | **19/19** | **40/40** | **€2,511.50 of €2,511.50** | 4.1 s |
 
-The samples are clean and synthetic. Real receipts will be harder.
+The samples are clean and synthetic. Real receipts will be harder. To measure that on your own redacted documents, without them ever entering git, see [eval/README.md](eval/README.md) (`pnpm eval:private`).
 
 ## Licence
 

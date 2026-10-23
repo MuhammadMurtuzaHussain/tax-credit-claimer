@@ -218,7 +218,8 @@ A first-time renter with three open years should see roughly €1,000–€2,700
 | `FakeExtractor` (canned answers in `fixtures/fake-responses.json`, some deliberately wrong) | Stub, for tests and the demo |
 | `OllamaExtractor` (Gemma 4 E4B, classify then extract, structured output, localhost only) | Real; 19/19 kinds and 40/40 fields on the samples (text, 2 images, 3 PDFs) |
 | Irish date normaliser ([src/dates.ts](src/dates.ts)) | Real, unit-tested |
-| Eval (`pnpm eval`, [eval/truth.json](eval/truth.json)) | Real, on synthetic samples only |
+| Eval (`pnpm eval`, [eval/truth.json](eval/truth.json)) | Real, on synthetic samples |
+| Private eval on your own documents (`pnpm eval:private`, [eval/README.md](eval/README.md)) | Real; git-ignored, guarded with `git check-ignore`; truth drafted by Gemma for you to correct. No real documents added yet |
 | Guard rules G1–G8, H1–H5 | Real, unit-tested |
 | Claim sheet | Real; the form field names are partly unconfirmed |
 | PDF input ([src/inputs.ts](src/inputs.ts)): text layer via pdf.js, scans drawn to PNG locally | Real; 19/19 kinds and 40/40 fields with the 3 PDF samples |

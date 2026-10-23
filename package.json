@@ -9,6 +9,7 @@
     "demo": "tsx src/cli.ts fixtures/shoebox --model fake --today 2026-10-22",
     "test": "vitest run",
     "eval": "tsx eval/run.ts",
+    "eval:private": "tsx eval/run.ts --set private",
     "typecheck": "tsc --noEmit"
   },
   "packageManager": "pnpm@12.8.1",
